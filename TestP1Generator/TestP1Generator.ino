@@ -54,11 +54,11 @@ const int blinkTime = 100;            // must be less than telegram interval!
 unsigned long time_now = 0;
 
 //#define LED_FOLLOW_DR               // uncomment this if you want the Data Request Led's follow the Data Request signal instead of the telegram transmit 
-//#define USE_MONITOR                 // uncomment this if you want to use one of the UARTs to monitor during development
+#define USE_MONITOR                 // uncomment this if you want to use one of the UARTs to monitor during development
 
 //void disableWiFi();
 
-P1Reader reader(&Serial1,P1_DR);
+//P1Reader reader(&Serial1,P1_DR);
 
 void setup() {
   
@@ -87,10 +87,11 @@ void setup() {
   ledcWrite(pwmP2led,MAX_DUTY_CYCLE);
   ledcWrite(pwmP3led,MAX_DUTY_CYCLE);
 
-  Serial1.begin(115200,SERIAL_8N1,P1_SERIAL_RX,-1,false);  //  Telgram receive port, UART1 attached to DSMR P1 port receiving telegrams at maximum interval, no send pin nessesary
-  Serial2.begin(115200,SERIAL_8N1,-1,P2_SERIAL_TX,false);  //  UART2 attached to HomeWizard send telegrams, on request, no receive pin nessesary
+  Serial1.begin(115200,SERIAL_8N1,-1,P3_SERIAL_TX,false);   //  UART0 attached to Alfen Load Balancer to send telegrams on request, no receive pin nessesary
+  //Serial1.begin(115200,SERIAL_8N1,P1_SERIAL_RX,-1,false);  //  Telgram receive port, UART1 attached to DSMR P1 port receiving telegrams at maximum interval, no send pin nessesary
+  //Serial2.begin(115200,SERIAL_8N1,-1,P2_SERIAL_TX,false);  //  UART2 attached to HomeWizard send telegrams, on request, no receive pin nessesary
 #ifndef USE_MONITOR 
-  Serial.begin(115200,SERIAL_8N1,-1,P3_SERIAL_TX,false);   //  UART0 attached to Alfen Load Balancer to send telegrams on request, no receive pin nessesary
+  //Serial1.begin(115200,SERIAL_8N1,-1,P3_SERIAL_TX,false);   //  UART0 attached to Alfen Load Balancer to send telegrams on request, no receive pin nessesary
 #endif  
 
 }
@@ -155,65 +156,140 @@ void loop() {
 //            System.err.println("Wrote record for timestamp: " + nowString);
 
     // send the telegram to P2 (HomeWizard P1 meter)
-    if (digitalRead(P2_DR) == LOW) {
-    #ifndef LED_FOLLOW_DR
-      ledcWrite(pwmP2led,dutyCycle);      // turn on the data request led for P2
-    #endif  
-      Serial2.println("/ISk5\\2MT382-1003");
-      Serial2.println("");
-      Serial2.println("0-0:96.1.1(5A424556303035313036383434393132)");
-      Serial2.println("1-0:1.8.1(16722.627*kWh)");
-      Serial2.println("1-0:1.8.2(19412.739*kWh)");
-      Serial2.println("1-0:2.8.1(00859.681*kWh)");
-      Serial2.println("1-0:2.8.2(01817.110*kWh)");
-      Serial2.println("0-0:96.14.0(0002)");
-      Serial2.println("1-0:1.7.0(0000.67*kW)");
-      Serial2.println("1-0:2.7.0(0000.00*kW)");
-      Serial2.println("0-0:17.0.0(0999.00*kW)");
-      Serial2.println("0-0:96.3.10(1)");
-      Serial2.println("0-0:96.13.1()");
-      Serial2.println("0-0:96.13.0()");
-      Serial2.println("0-2:24.1.0(3)");
-      Serial2.println("0-2:96.1.0(3238303131303038333036343239303133)");
-      Serial2.println("0-2:24.3.0(211123200000)(00)(60)(1)(0-2:24.2.1)(m3)");
-      Serial2.println("(13376.292)");
-      Serial2.println("0-2:24.4.0(1)");
-      Serial2.println("!");
-    #ifndef LED_FOLLOW_DR  
-      ledcWrite(pwmP2led,MAX_DUTY_CYCLE);
-    #endif  
-    }
+//    if (digitalRead(P2_DR) == LOW) {
+//    #ifndef LED_FOLLOW_DR
+//      ledcWrite(pwmP2led,dutyCycle);      // turn on the data request led for P2
+//    #endif  
+//      Serial2.println("/ISk5\\2MT382-1003");
+//      Serial2.println("");
+//      Serial2.println("0-0:96.1.1(5A424556303035313036383434393132)");
+//      Serial2.println("1-0:1.8.1(16722.627*kWh)");
+//      Serial2.println("1-0:1.8.2(19412.739*kWh)");
+//      Serial2.println("1-0:2.8.1(00859.681*kWh)");
+//      Serial2.println("1-0:2.8.2(01817.110*kWh)");
+//      Serial2.println("0-0:96.14.0(0002)");
+//      Serial2.println("1-0:1.7.0(0000.67*kW)");
+//      Serial2.println("1-0:2.7.0(0000.00*kW)");
+//      Serial2.println("0-0:17.0.0(0999.00*kW)");
+//      Serial2.println("0-0:96.3.10(1)");
+//      Serial2.println("0-0:96.13.1()");
+//      Serial2.println("0-0:96.13.0()");
+//      Serial2.println("0-2:24.1.0(3)");
+//      Serial2.println("0-2:96.1.0(3238303131303038333036343239303133)");
+//      Serial2.println("0-2:24.3.0(211123200000)(00)(60)(1)(0-2:24.2.1)(m3)");
+//      Serial2.println("(13376.292)");
+//      Serial2.println("0-2:24.4.0(1)");
+//      Serial2.println("!");
+
+      Serial1.println("XMX5XMXCQA0000008879");
+      Serial1.println("");
+      Serial1.println("1-3:0.2.8(40)");
+      Serial1.println("0-0:1.0.0(000101010000W)");
+      Serial1.println("0-0:96.1.1(4530303030303030303030303030303030)");
+      Serial1.println("1-0:1.8.1(000000.000*kWh)");
+      Serial1.println("1-0:2.8.1(000000.000*kWh)");
+      Serial1.println("1-0:1.8.2(000000.000*kWh)");
+      Serial1.println("1-0:2.8.2(000000.000*kWh)");
+      Serial1.println("0-0:96.14.0(0001)");
+      Serial1.println("1-0:1.7.0(00.000*kW)");
+      Serial1.println("1-0:2.7.0(00.000*kW)");
+      Serial1.println("0-0:17.0.0(000.0*kW)");
+      Serial1.println("0-0:96.3.10(1)");
+      Serial1.println("0-0:96.7.21(00000)");
+      Serial1.println("0-0:96.7.9(00000)");
+      Serial1.println("1-0:99.97.0(0)(0-0:96.7.19)");
+      Serial1.println("1-0:32.32.0(00000)");
+      Serial1.println("1-0:52.32.0(00000)");
+      Serial1.println("1-0:72.32.0(00000)");
+      Serial1.println("1-0:32.36.0(00000)");
+      Serial1.println("1-0:52.36.0(00000)");
+      Serial1.println("1-0:72.36.0(00000)");
+      Serial1.println("0-0:96.13.1(XMX_P1CS_V05)");
+      Serial1.println("0-0:96.13.0()");
+      Serial1.println("1-0:31.7.0(024*A)");
+      Serial1.println("1-0:51.7.0(024*A)");
+      Serial1.println("1-0:71.7.0(024*A)");
+      Serial1.println("1-0:21.7.0(00.000*kW)");
+      Serial1.println("1-0:41.7.0(00.000*kW)");
+      Serial1.println("1-0:61.7.0(00.000*kW)");
+      Serial1.println("1-0:22.7.0(00.000*kW)");
+      Serial1.println("1-0:42.7.0(00.000*kW)");
+      Serial1.println("1-0:62.7.0(00.000*kW)");
+      Serial1.println("!19D6");
+      
+//    #ifndef LED_FOLLOW_DR  
+//      ledcWrite(pwmP2led,MAX_DUTY_CYCLE);
+//    #endif  
+//    }
 
     // send the telegram to P3 (Alfen Load Balancer)
-    if (digitalRead(P3_DR) == LOW) {
-    //if (counter == 10) {
-    #ifndef LED_FOLLOW_DR  
-      ledcWrite(pwmP3led,dutyCycle);      // turn on the data request led for P3
-    #endif
-      Serial.println("/ISk5\\2MT382-1003");
+//    if (digitalRead(P3_DR) == LOW) {
+//    //if (counter == 10) {
+//    #ifndef LED_FOLLOW_DR  
+//      ledcWrite(pwmP3led,dutyCycle);      // turn on the data request led for P3
+//    #endif
+    
+//      Serial.println("/ISk5\\2MT382-1003");
+//      Serial.println("");
+//      Serial.println("0-0:96.1.1(5A424556303035313036383434393132)");
+//      Serial.println("1-0:1.8.1(16722.627*kWh)");
+//      Serial.println("1-0:1.8.2(19412.739*kWh)");
+//      Serial.println("1-0:2.8.1(00859.681*kWh)");
+//      Serial.println("1-0:2.8.2(01817.110*kWh)");
+//      Serial.println("0-0:96.14.0(0002)");
+//      Serial.println("1-0:1.7.0(0000.67*kW)");
+//      Serial.println("1-0:2.7.0(0000.00*kW)");
+//      Serial.println("0-0:17.0.0(0999.00*kW)");
+//      Serial.println("0-0:96.3.10(1)");
+//      Serial.println("0-0:96.13.1()");
+//      Serial.println("0-0:96.13.0()");
+//      Serial.println("0-2:24.1.0(3)");
+//      Serial.println("0-2:96.1.0(3238303131303038333036343239303133)");
+//      Serial.println("0-2:24.3.0(211123200000)(00)(60)(1)(0-2:24.2.1)(m3)");
+//      Serial.println("(13376.292)");
+//      Serial.println("0-2:24.4.0(1)");
+//      Serial.println("!");
+
+      Serial.println("XMX5XMXCQA0000008879");
       Serial.println("");
-      Serial.println("0-0:96.1.1(5A424556303035313036383434393132)");
-      Serial.println("1-0:1.8.1(16722.627*kWh)");
-      Serial.println("1-0:1.8.2(19412.739*kWh)");
-      Serial.println("1-0:2.8.1(00859.681*kWh)");
-      Serial.println("1-0:2.8.2(01817.110*kWh)");
-      Serial.println("0-0:96.14.0(0002)");
-      Serial.println("1-0:1.7.0(0000.67*kW)");
-      Serial.println("1-0:2.7.0(0000.00*kW)");
-      Serial.println("0-0:17.0.0(0999.00*kW)");
+      Serial.println("1-3:0.2.8(40)");
+      Serial.println("0-0:1.0.0(000101010000W)");
+      Serial.println("0-0:96.1.1(4530303030303030303030303030303030)");
+      Serial.println("1-0:1.8.1(000000.000*kWh)");
+      Serial.println("1-0:2.8.1(000000.000*kWh)");
+      Serial.println("1-0:1.8.2(000000.000*kWh)");
+      Serial.println("1-0:2.8.2(000000.000*kWh)");
+      Serial.println("0-0:96.14.0(0001)");
+      Serial.println("1-0:1.7.0(00.000*kW)");
+      Serial.println("1-0:2.7.0(00.000*kW)");
+      Serial.println("0-0:17.0.0(000.0*kW)");
       Serial.println("0-0:96.3.10(1)");
-      Serial.println("0-0:96.13.1()");
+      Serial.println("0-0:96.7.21(00000)");
+      Serial.println("0-0:96.7.9(00000)");
+      Serial.println("1-0:99.97.0(0)(0-0:96.7.19)");
+      Serial.println("1-0:32.32.0(00000)");
+      Serial.println("1-0:52.32.0(00000)");
+      Serial.println("1-0:72.32.0(00000)");
+      Serial.println("1-0:32.36.0(00000)");
+      Serial.println("1-0:52.36.0(00000)");
+      Serial.println("1-0:72.36.0(00000)");
+      Serial.println("0-0:96.13.1(XMX_P1CS_V05)");
       Serial.println("0-0:96.13.0()");
-      Serial.println("0-2:24.1.0(3)");
-      Serial.println("0-2:96.1.0(3238303131303038333036343239303133)");
-      Serial.println("0-2:24.3.0(211123200000)(00)(60)(1)(0-2:24.2.1)(m3)");
-      Serial.println("(13376.292)");
-      Serial.println("0-2:24.4.0(1)");
-      Serial.println("!");
-    #ifndef LED_FOLLOW_DR  
-      ledcWrite(pwmP3led,MAX_DUTY_CYCLE);
-    #endif  
-    }
+      Serial.println("1-0:31.7.0(024*A)");
+      Serial.println("1-0:51.7.0(024*A)");
+      Serial.println("1-0:71.7.0(024*A)");
+      Serial.println("1-0:21.7.0(00.000*kW)");
+      Serial.println("1-0:41.7.0(00.000*kW)");
+      Serial.println("1-0:61.7.0(00.000*kW)");
+      Serial.println("1-0:22.7.0(00.000*kW)");
+      Serial.println("1-0:42.7.0(00.000*kW)");
+      Serial.println("1-0:62.7.0(00.000*kW)");
+      Serial.println("!19D6");
+      
+//    #ifndef LED_FOLLOW_DR  
+//      ledcWrite(pwmP3led,MAX_DUTY_CYCLE);
+//    #endif  
+//    }
 
     if (millis() < (time_now + blinkTime)) { 
       while(millis() < time_now + blinkTime){
